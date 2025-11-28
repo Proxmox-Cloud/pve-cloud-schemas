@@ -37,28 +37,29 @@ def recursive_merge(dict1, dict2):
 # this method gets called indirectly via the pve_cloud ansible collection
 # if there is a pve.cloud collection playbook is passed in the system args
 # we can load a schema extension aswell
-def validate_inventory(inventory):
+def validate_inventory(inventory, load_schema_ext=True):
     # load base schema
     base_schema_name = inventory["plugin"].removeprefix("pve.cloud.")
 
     with (files("pve_cloud_schemas.definitions") / f"{base_schema_name}_schema.yaml").open("r") as f:
         schema = yaml.safe_load(f)
 
-    called_pve_cloud_playbook = None
-    for arg in sys.argv:
-        if arg.startswith("pve.cloud."):
-            called_pve_cloud_playbook = arg.split('.')[-1].removeprefix("pve.cloud.")
+    if load_schema_ext:
+        called_pve_cloud_playbook = None
+        for arg in sys.argv:
+            if arg.startswith("pve.cloud."):
+                called_pve_cloud_playbook = arg.split('.')[-1].removeprefix("pve.cloud.")
 
-    if called_pve_cloud_playbook:
-        # playbook call look for schema extension
-        extension_file = files("pve_cloud_schemas.extensions") / f"{called_pve_cloud_playbook}_schema_ext.yaml"
+        if called_pve_cloud_playbook:
+            # playbook call look for schema extension
+            extension_file = files("pve_cloud_schemas.extensions") / f"{called_pve_cloud_playbook}_schema_ext.yaml"
 
-        if extension_file.is_file(): # schema extension exists
-            with extension_file.open("r") as f:
-                schema_ext = yaml.safe_load(f)
+            if extension_file.is_file(): # schema extension exists
+                with extension_file.open("r") as f:
+                    schema_ext = yaml.safe_load(f)
 
-            # merge with base schema 
-            schema = recursive_merge(schema, schema_ext)
+                # merge with base schema 
+                schema = recursive_merge(schema, schema_ext)
 
     
     jsonschema.validate(instance=inventory, schema=schema)
