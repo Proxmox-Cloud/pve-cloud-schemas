@@ -1,0 +1,17 @@
+properties:
+  plugin:
+    type: string
+    description: Id of ansible inventory plugin.
+    enum:
+      - pve.cloud.lxc_inv # merge key
+  lxcs:
+    items:
+      required:
+        - vars
+      properties:
+        vars:
+          required:
+            - bind_master
+          properties:
+            bind_master:
+              type: boolean

@@ -1,0 +1,28 @@
+required:
+  - static_includes
+properties:
+  plugin:
+    type: string
+    description: Id of ansible inventory plugin.
+    enum:
+      - pve.cloud.lxc_inv
+  static_includes:
+    additionalProperties: false
+    required:
+      - postgres_stack
+    properties:
+      postgres_stack:
+        type: string
+        description: Stack fqdn for postgres patroni stack.
+  lxcs:
+    items:
+      required:
+        - vars
+      properties:
+        vars:
+          required:
+            - keepalived_master
+          properties:
+            keepalived_master:
+              description: One LXC should have this set to true the other to false.
+              type: boolean
