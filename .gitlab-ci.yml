@@ -40,6 +40,8 @@ downstream_pytest_pve_cloud:
 
 downstream_pve_cloud:
   stage: deploy
+  needs:
+    - publish_pypi
   trigger:
     project: "pve-cloud/pve_cloud"
   variables:
