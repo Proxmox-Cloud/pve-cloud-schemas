@@ -1,0 +1,13 @@
+[build]
+build_commands = [
+  # currently only needed in local venv
+  [
+    "pip", "install", "-e", "."
+  ]
+]
+version_py_path = "src/pve_cloud_schemas/_version.py"
+
+[redis]
+version_key = "version.pve-cloud-schemas"
+sub_rebuild_keys = []
+env_key_mapping = {} 
