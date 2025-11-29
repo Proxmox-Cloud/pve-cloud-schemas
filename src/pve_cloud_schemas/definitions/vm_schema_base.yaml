@@ -1,0 +1,54 @@
+type: object
+title: "VM Base Schema"
+required:
+  - target_pve
+  - stack_name
+  - root_ssh_pub_key
+additionalProperties: false
+properties:
+  target_pve:
+    type: string
+    description: "Proxmox cluster name + . + pve cloud domain. This determines the cloud and the proxmox cluster the k8s cluster will be created in."
+    examples:
+      - proxmox-cluster-a.your-cloud.domain
+  stack_name:
+    type: string
+    description: "Your stack name, needs to be unique within the cloud domain."
+    example:
+      - example-k8s-cluster
+      - example-lxc-service
+  static_includes:
+    type: object
+  include_stacks:
+    type: array
+    description: "Include other stacks into the ansible inventory, from any pve cloud you are connected to. From here you can freely extend and write your own playbooks."
+    items:
+      type: object
+      required:
+        - stack_fqdn
+        - host_group
+      additionalProperties: false
+      properties:
+        stack_fqdn:
+          type: string
+          description: "Target stack fqdn to include (stack name + pve_cloud_domain). Will automatically include it from the right pve cluster."
+          examples:
+            - bind.your-other-cloud.domain
+            - other-k8s.your-other-cloud.domain
+        host_group:
+          type: string
+          description: "This is the name of the hosts group of our ansible inventory the included vms/lxcs will be available under."
+        qemu_ansible_user:
+          type: string
+          description: |
+            User ansible will use to connect, defaults to admin. If you dont want to use debian cinit images you might need to set something else than admin.
+            Ubuntu for example wont work if you set the cloud init user to admin.
+  root_ssh_pub_key:
+    type: string
+    description: trusted root key for the cloud init image.
+  pve_ha_group:
+    type: string
+    description: PVE HA group this vm should be assigned to (optional).
+  pve_cloud_pytest:
+    type: object
+    description: Variables object used only in e2e tests.

@@ -1,11 +1,8 @@
+title: "Schema ext setup_haproxy playbook"
+extend_schema: lxc_inv_schema.yaml
 required:
   - static_includes
 properties:
-  plugin:
-    type: string
-    description: Id of ansible inventory plugin.
-    enum:
-      - pve.cloud.lxc_inv
   static_includes:
     additionalProperties: false
     required:
@@ -13,7 +10,12 @@ properties:
     properties:
       postgres_stack:
         type: string
-        description: Stack fqdn for postgres patroni stack.
+        description: |
+          Stack fqdn for postgres patroni stack. On the presence of the host the playbook will fetch
+          proxy configuration from the database. This is needed so that after the initial setup everything
+          still works.
+        examples:
+          - patroni.your-cloud.domain
   lxcs:
     items:
       required:

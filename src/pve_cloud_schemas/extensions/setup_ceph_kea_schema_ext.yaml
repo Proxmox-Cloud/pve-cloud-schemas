@@ -1,10 +1,6 @@
 title: "Schema ext setup_ceph_kea playbook"
+extend_schema: lxc_inv_schema.yaml
 properties:
-  plugin:
-    type: string
-    description: Id of ansible inventory plugin.
-    enum:
-      - pve.cloud.lxc_inv
   lxcs:
     items:
       required:
@@ -12,10 +8,13 @@ properties:
       properties:
         parameters:
           properties:
-            net0:
-              pattern: "\\bname=pve\\b"
             net1:
               pattern: "\\bname=cephfe\\b"
+              description: |
+                This dhcp is exclusively for use with a seperate network for ceph frontend communication.
+                Ceph monitors are usually static and kubernetes nodes that use the csi driver need to
+                be able to communicate them. The interface needs to be named "cephfe" as this is how the
+                kea dhcp config is written.
         vars:
           required:
             - kea_dhcp_ceph_frontend_subnet
@@ -24,8 +23,10 @@ properties:
             kea_dhcp_ceph_frontend_subnet:
               type: string
               description: "Optional definition for a seperate dhcp if the ceph frontend resides on a different interface (map it inside the dhcp lxcs to pve0)."
+              examples:
+                - 10.0.255.0/24
             kea_dhcp_ceph_frontend_pool:
               type: string
               description: "Pool for ceph frontend ip allocations, this way monitors can have their static block."
               examples:
-                - "10.255.22.17 - 10.255.23.254"
+                - "10.0.255.40 - 10.0.255.254"

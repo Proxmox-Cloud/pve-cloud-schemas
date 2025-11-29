@@ -1,10 +1,6 @@
 title: "Schema ext setup_kea playbook"
+extend_schema: lxc_inv_schema.yaml
 properties:
-  plugin:
-    type: string
-    description: Id of ansible inventory plugin.
-    enum:
-      - pve.cloud.lxc_inv
   lxcs:
     items:
       required:
@@ -13,6 +9,9 @@ properties:
         parameters:
           properties:
             net0:
+              description: |
+                Network interface the dhcp will serve on. This has to be named "pve" instead of the normal eth0 for the dhcp playbooks to work,
+                they configure kea to listen on this interface name.
               pattern: "\\bname=pve\\b"
         vars:
           required:

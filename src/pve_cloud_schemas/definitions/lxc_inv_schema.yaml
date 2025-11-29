@@ -1,21 +1,10 @@
-type: object
+
 title: "LXC Inventory"
-description: "Base inventory for creating lxcs for a single stack on PVE."
-additionalProperties: false
+description: "Inventory for creating lxcs for a single stack on PVE."
+inherit_schema: vm_schema_base.yaml
 required:
-  - target_pve
-  - stack_name
   - lxcs
-  - root_ssh_pub_key
 properties:
-  target_pve:
-    type: string
-    description: "Proxmox cluster name + cloud domain, this is where the lxcs will be created."
-  stack_name:
-    type: string
-    description: "Your stack name, needs to be unique within the cloud."
-  static_includes:
-    type: object
   lxcs:
     type: array
     description: "List of lxcs that will be created for the stack."
@@ -56,21 +45,6 @@ properties:
               description: "Configuration for primary network interface."
               examples:
                 - "name=eth0,bridge=vmbr0,tag=120,firewall=1,ip=dhcp"
-  include_stacks:
-    type: array
-    description: "Include other cloud stacks into the ansible inventory, from any PVE cluster within the cloud you like."
-    items:
-      type: object
-      properties:
-        stack_fqdn:
-          type: string
-          description: "Target stack fqdn to include (stack name + pve_cloud_domain). Will automatically include it from the right pve cluster."
-        host_group:
-          type: string
-          description: "This is the name of the hosts group of our ansible inventory the included vms will be under."
-        qemu_ansible_user:
-          type: string
-          description: "User ansible will use to connect if its a vm, defaults to admin. LXCs are always root."
   lxc_global_vars:
     type: object
     description: "Variables that will be applied to all lxc hosts and are available in playbooks."
@@ -82,9 +56,6 @@ properties:
         type: boolean
         description: "Will install prometheus metrics exporter for systemd. This implements with pve cloud terraform monitoring modules."
     additionalProperties: true
-  pve_ha_group:
-    type: string
-    description: "When set the stack will be added to the corresponding PVE high availability group."
   lxc_base_parameters:
     type: object
     description: "PVE pct cli parameters that will be used for all lxcs."
@@ -92,12 +63,6 @@ properties:
     type: string
     description: "`pveam available --section system` / run `pveam update` for newest, PVE available LXC template (will be downloaded)."
     example: debian-11-standard_11.7-1_amd64.tar.zst
-  root_ssh_pub_key:
-    type: string
-    description: "Public key that will be installed for the root user of all lxcs in the stack."
-  pve_cloud_pytest:
-    type: object
-    description: Variables object used only in e2e tests.
   plugin:
     type: string
     description: Id of ansible inventory plugin.
