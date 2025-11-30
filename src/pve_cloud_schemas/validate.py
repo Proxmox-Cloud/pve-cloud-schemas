@@ -121,7 +121,7 @@ def dump_schemas():
         with schema_ext.open("r") as f:
             schema_ext_loaded = yaml.safe_load(f)
         
-        schema_merged = recursive_merge(schema_map[schema_ext["extend_schema"]], schema_ext_loaded)
+        schema_merged = recursive_merge(schema_map[schema_ext_loaded["extend_schema"]], schema_ext_loaded)
 
         schema_merged.pop("extend_schema", None) # remove the extension key
         
