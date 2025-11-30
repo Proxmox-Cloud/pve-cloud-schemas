@@ -1,4 +1,4 @@
-title: "Kubernetes kubespray inventory"
+title: "K8s Kubespray Inventory"
 inherit_schema: qemu_inv_schema.yaml
 description: "Inventory for deploying k8s clusters via kubespray on PVE."
 required:

@@ -1,4 +1,5 @@
-title: "Schema ext setup_ceph_kea playbook"
+title: "Ceph DHCP Inventory"
+description: "LXC Inventory extension for the setup_ceph_kea playbook."
 extend_schema: lxc_inv_schema.yaml
 properties:
   lxcs:

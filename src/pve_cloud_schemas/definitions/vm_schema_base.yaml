@@ -8,7 +8,7 @@ additionalProperties: false
 properties:
   target_pve:
     type: string
-    description: "Proxmox cluster name + . + pve cloud domain. This determines the cloud and the proxmox cluster the k8s cluster will be created in."
+    description: "Proxmox cluster name + . + pve cloud domain. This determines the cloud and the proxmox cluster the vms/lxc/k8s luster will be created in."
     examples:
       - proxmox-cluster-a.your-cloud.domain
   stack_name:

@@ -1,4 +1,5 @@
-title: "Schema ext setup_bind playbook"
+title: "Bind Dns Inventory"
+description: "LXC Inventory extension for the setup_bind playbook."
 extend_schema: lxc_inv_schema.yaml
 properties:
   lxcs:

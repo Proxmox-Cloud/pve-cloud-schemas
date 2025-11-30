@@ -1,6 +1,6 @@
 title: "VM Inventory"
 inherit_schema: vm_schema_base.yaml
-description: "Inventory for deploying k8s clusters via kubespray on PVE."
+description: "Inventory for deploying qemu VMs on PVE."
 additionalProperties: false
 required:
   - qemus

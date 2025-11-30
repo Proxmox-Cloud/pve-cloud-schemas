@@ -1,6 +1,6 @@
 
 title: "LXC Inventory"
-description: "Inventory for creating lxcs for a single stack on PVE."
+description: "Inventory for creating lxcs on PVE."
 inherit_schema: vm_schema_base.yaml
 required:
   - lxcs

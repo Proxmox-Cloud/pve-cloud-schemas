@@ -1,4 +1,5 @@
-title: "Schema ext setup_haproxy playbook"
+title: "HAProxy Inventory"
+description: "LXC Inventory extension for the setup_proxy playbook."
 extend_schema: lxc_inv_schema.yaml
 required:
   - static_includes

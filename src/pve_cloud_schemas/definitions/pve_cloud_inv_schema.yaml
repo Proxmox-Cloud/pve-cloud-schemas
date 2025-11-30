@@ -1,6 +1,6 @@
 type: object
 title: "Cloud Inventory"
-description: "Definitions for a proxmox cloud."
+description: "Definitions for a proxmox cloud, setup of proxmox clusters."
 additionalProperties: false
 required:
   - pve_cloud_domain
