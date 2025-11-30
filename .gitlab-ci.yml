@@ -24,7 +24,7 @@ publish_pypi:
     # curl loop wait for it to be accessible
     - |
       for i in {1..60}; do
-        if curl -s https://pypi.org/simple/pve-cloud-schemas/ | grep -q "py_pve_cloud-$CI_COMMIT_TAG.tar.gz"; then
+        if curl -s https://pypi.org/simple/pve-cloud-schemas/ | grep -q "pve_cloud_schemas-$CI_COMMIT_TAG.tar.gz"; then
           echo "exists!"
           exit 0
         fi
