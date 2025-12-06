@@ -6,7 +6,6 @@ required:
   - tcp_proxies
   - static_includes
   - qemus
-  - ceph_csi_sc_pools
 properties:
   extra_control_plane_sans:
     type: array
@@ -153,7 +152,7 @@ properties:
               - worker
   ceph_csi_sc_pools:
     type: array
-    description: "Ceph pools that will be made available to the cluster CSI driver."
+    description: "Ceph pools that will be made available to the clusters Ceph CSI driver (optional)."
     items:
       type: object
       additionalProperties: false

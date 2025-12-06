@@ -93,11 +93,11 @@ properties:
           pve_haproxy_floating_ip_internal:
             type: string
             description: |
-              Floating ip that is exclusively accessible from inside the cloud / location. External forwardings should be made to pve_haproxy_floating_ip.
+              Floating ip that is exclusively accessible from inside the cloud / location. External forwardings should be made to pve_haproxy_floating_ip_external.
               Inside the cloud if you define a certificate entry, some nodeport forward or default kubeapi access, this will all be available automatically on this ip.
             examples:
               - 192.168.10.6
-          pve_haproxy_floating_ip:
+          pve_haproxy_floating_ip_external:
             type: string
             description: "Floating ip of our central cluster HAProxy."
             examples:
