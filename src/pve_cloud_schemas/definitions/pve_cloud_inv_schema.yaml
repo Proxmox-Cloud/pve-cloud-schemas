@@ -120,6 +120,13 @@ properties:
               This can be used to build your specialized pve cluster setup playbooks. You can do things like
               wakeonlan, driver and network configuration with these easily. Simply create your own playbook and
               run it even before the pve.cloud.setup_pve_clusters on this inventory.
+            additionalProperties: true
+            properties:
+              disable_ipmi:
+                type: boolean
+                description: |
+                  If specified will disable the openipmi power managemend systemd service. This might fail on proxmox
+                  hosts that dont support it and clutters up monitoring.
        
   bind_zone_admin_email:
     type: string
