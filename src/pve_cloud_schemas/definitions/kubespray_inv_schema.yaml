@@ -179,7 +179,4 @@ properties:
     description: Id of ansible inventory plugin.
     enum:
       - pve.cloud.kubespray_inv
-  pve_cloud_pytest:
-    type: object
-    description: Variables object used only in e2e tests.
 

@@ -110,7 +110,6 @@ def dump_schemas():
             schema_loaded = load_inheritance(yaml.safe_load(f))
 
         schema_loaded.pop("inherit_schema", None) # remove the inheritance key if it exists
-        schema_loaded.pop("pve_cloud_pytest", None) # only used by e2e tests
         
         # dump the inherited schema
         with (dump_po / schema.name).open("w") as f:
@@ -126,7 +125,6 @@ def dump_schemas():
         schema_merged = recursive_merge(schema_map[schema_ext_loaded["extend_schema"]], schema_ext_loaded)
 
         schema_merged.pop("extend_schema", None) # remove the extension key
-        schema_merged.pop("pve_cloud_pytest", None) # only used by e2e tests
 
         # write it
         with (dump_po / schema_ext.name).open("w") as f:

@@ -49,6 +49,3 @@ properties:
   pve_ha_group:
     type: string
     description: PVE HA group this vm should be assigned to (optional).
-  pve_cloud_pytest:
-    type: object
-    description: Variables object used only in e2e tests.

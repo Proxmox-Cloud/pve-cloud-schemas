@@ -160,9 +160,6 @@ properties:
       - ionos
     description: | 
       PVE Cloud included method for solving dns01 challenges. You need to have created the appropriate secrets under /etc/pve/cloud on your proxmox cluster.
-  pve_cloud_pytest:
-    type: object
-    description: Variables object used only in e2e tests.
   plugin:
     type: string
     description: "Id of ansible inventory plugin, needs to be set exactly."
