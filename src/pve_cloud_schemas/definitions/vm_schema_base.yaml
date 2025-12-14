@@ -49,3 +49,11 @@ properties:
   pve_ha_group:
     type: string
     description: PVE HA group this vm should be assigned to (optional).
+  target_pve_hosts:
+    type: array
+    description: Array of proxmox hosts in the target pve that are eligible for scheduling. If not specified all online hosts are considered.
+    items:
+      type: string
+      description: The hostname of the proxmox host. Just the hostname, no cluster name or cloud domain should be specified, as they are implicit.
+      examples:
+        - proxmox-host-a
