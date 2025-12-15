@@ -113,7 +113,7 @@ properties:
     properties:
       dhcp_stack:
         type: string
-        description: "The pve.cloud.sync_kubespray playbook needs the dhcp stack to refresh the configuration after having made static reservations for kubernetes node ips."
+        description: "The pxc.cloud.sync_kubespray playbook needs the dhcp stack to refresh the configuration after having made static reservations for kubernetes node ips."
         examples:
           - dhcp.your-cloud.domain
       proxy_stack:
@@ -178,5 +178,5 @@ properties:
     type: string
     description: Id of ansible inventory plugin.
     enum:
-      - pve.cloud.kubespray_inv
+      - pxc.cloud.kubespray_inv
 

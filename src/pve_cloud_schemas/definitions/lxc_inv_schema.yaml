@@ -67,4 +67,4 @@ properties:
     type: string
     description: Id of ansible inventory plugin.
     enum:
-      - pve.cloud.lxc_inv
+      - pxc.cloud.lxc_inv

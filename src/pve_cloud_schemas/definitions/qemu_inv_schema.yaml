@@ -78,4 +78,4 @@ properties:
     type: string
     description: Id of ansible inventory plugin
     enum:
-      - pve.cloud.qemu_inv
+      - pxc.cloud.qemu_inv

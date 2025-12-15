@@ -50,11 +50,11 @@ def load_inheritance(loaded_schema):
 
 
 # this method gets called indirectly via the pve_cloud ansible collection
-# if there is a pve.cloud collection playbook is passed in the system args
+# if there is a pxc.cloud collection playbook is passed in the system args
 # we can load a schema extension aswell
 def validate_inventory(inventory, load_schema_ext=True):
     # load base schema
-    base_schema_name = inventory["plugin"].removeprefix("pve.cloud.")
+    base_schema_name = inventory["plugin"].removeprefix("pxc.cloud.")
 
     # load schema with inheritance
     with (files("pve_cloud_schemas.definitions") / f"{base_schema_name}_schema.yaml").open("r") as f:
@@ -66,8 +66,8 @@ def validate_inventory(inventory, load_schema_ext=True):
     if load_schema_ext:
         called_pve_cloud_playbook = None
         for arg in sys.argv:
-            if arg.startswith("pve.cloud."):
-                called_pve_cloud_playbook = arg.split('.')[-1].removeprefix("pve.cloud.")
+            if arg.startswith("pxc.cloud."):
+                called_pve_cloud_playbook = arg.split('.')[-1].removeprefix("pxc.cloud.")
             if arg.startswith("playbooks/"): # execution in e2e tests
                 called_pve_cloud_playbook = arg.removeprefix("playbooks/").removesuffix(".yaml")
 

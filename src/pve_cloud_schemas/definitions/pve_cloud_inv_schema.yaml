@@ -119,7 +119,7 @@ properties:
               Optional variables that will be specifically set for a pve host. Key is the simple host name. 
               This can be used to build your specialized pve cluster setup playbooks. You can do things like
               wakeonlan, driver and network configuration with these easily. Simply create your own playbook and
-              run it even before the pve.cloud.setup_pve_clusters on this inventory.
+              run it even before the pxc.cloud.setup_pve_clusters on this inventory.
             additionalProperties: true
             properties:
               disable_ipmi:
@@ -164,4 +164,4 @@ properties:
     type: string
     description: "Id of ansible inventory plugin, needs to be set exactly."
     enum:
-      - pve.cloud.pve_cloud_inv
+      - pxc.cloud.pve_cloud_inv
