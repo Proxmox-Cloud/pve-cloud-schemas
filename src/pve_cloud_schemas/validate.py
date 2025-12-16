@@ -117,15 +117,13 @@ def dump_schemas():
 
         schema_map[schema.name] = schema_loaded
 
-    # load schema extensions, merge and dump
+    # load schema extensions and dump
     for schema_ext in files("pve_cloud_schemas.extensions").iterdir():
         with schema_ext.open("r") as f:
             schema_ext_loaded = yaml.safe_load(f)
-        
-        schema_merged = recursive_merge(schema_map[schema_ext_loaded["extend_schema"]], schema_ext_loaded)
 
-        schema_merged.pop("extend_schema", None) # remove the extension key
+        schema_ext_loaded.pop("extend_schema", None) # remove the extension key
 
         # write it
         with (dump_po / schema_ext.name).open("w") as f:
-            yaml.dump(schema_merged, f, sort_keys=False, indent=2)
+            yaml.dump(schema_ext_loaded, f, sort_keys=False, indent=2)

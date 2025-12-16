@@ -1,13 +1,18 @@
 title: "Bind Dns Inventory"
-description: "LXC Inventory extension for the setup_bind playbook."
+description: "LXC Inventory extension for the setup_bind playbook. This extends the LXC Inventory schema."
 extend_schema: lxc_inv_schema.yaml
 properties:
   lxcs:
+    type: array
+    description: "List of lxcs that will be created for the stack."
     items:
+      type: object
       required:
         - vars
       properties:
         vars:
+          type: object
+          description: "For the dns to work we need to tell the playbooks which lxc will serve as the master and which as the slave."
           required:
             - bind_master
           properties:

@@ -81,12 +81,11 @@ properties:
     additionalProperties: false
     description: "Definitions for specific Proxmox clusters that will be part of the cloud. Keys are hostnames."
     patternProperties:
-      # todo: find nice regex to validate hostnames?
-      '^.*$':
+      '^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*$':
         type: object
-        title: "PVE cluster fqdn"
+        title: "Cloud config for specific proxmox clusters."
         additionalProperties: false
-        description: "Fully quantified name for the cluster."
+        description: "This object contains configuration parameters for a proxmox cluster within a proxmox cloud."
         required:
           - pve_unique_cloud_services
         properties:

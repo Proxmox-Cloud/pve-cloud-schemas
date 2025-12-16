@@ -1,13 +1,18 @@
 title: "Ceph DHCP Inventory"
-description: "LXC Inventory extension for the setup_ceph_kea playbook."
+description: "LXC Inventory extension for the setup_ceph_kea playbook. This extends the LXC Inventory schema."
 extend_schema: lxc_inv_schema.yaml
 properties:
   lxcs:
+    type: array
+    description: "List of lxcs that will be created for the stack."
     items:
+      type: object
       required:
         - vars
       properties:
         parameters:
+          type: object
+          description: "Besides the default lxc parameters you have to define the network interfaces with a certain pattern."
           properties:
             net1:
               pattern: "\\bname=cephfe\\b"
@@ -17,6 +22,8 @@ properties:
                 be able to communicate them. The interface needs to be named "cephfe" as this is how the
                 kea dhcp config is written.
         vars:
+          type: object
+          description: "The standalone ceph dhcp needs to know pool and subnet for assigning ips."
           required:
             - kea_dhcp_ceph_frontend_subnet
             - kea_dhcp_ceph_frontend_pool

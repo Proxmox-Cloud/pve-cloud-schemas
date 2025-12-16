@@ -1,10 +1,12 @@
 title: "HAProxy Inventory"
-description: "LXC Inventory extension for the setup_proxy playbook."
+description: "LXC Inventory extension for the setup_proxy playbook. This extends the LXC Inventory schema."
 extend_schema: lxc_inv_schema.yaml
 required:
   - static_includes
 properties:
   static_includes:
+    type: object
+    description: "Include other stacks into the ansible inventory, from any pve cloud you are connected to. From here you can freely extend and write your own playbooks."
     additionalProperties: false
     required:
       - postgres_stack
@@ -18,11 +20,15 @@ properties:
         examples:
           - patroni.your-cloud.domain
   lxcs:
+    type: array
+    description: "List of lxcs that will be created for the stack."
     items:
       required:
         - vars
       properties:
         vars:
+          type: object
+          description: "Our proxy stack needs to know which lxc is the keepalived master and who is the failover."
           required:
             - keepalived_master
           properties:

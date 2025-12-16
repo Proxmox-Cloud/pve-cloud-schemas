@@ -1,13 +1,18 @@
 title: "General DHCP Inventory"
-description: "LXC Inventory extension for the setup_kea playbook."
+description: "LXC Inventory extension for the setup_kea playbook. This extends the LXC Inventory schema."
 extend_schema: lxc_inv_schema.yaml
 properties:
   lxcs:
+    type: array
+    description: "List of lxcs that will be created for the stack."
     items:
+      type: object
       required:
         - vars
       properties:
         parameters:
+          type: object
+          description: "Besides the default lxc parameters you have to define the network interfaces with a certain pattern."
           properties:
             net0:
               description: |
@@ -15,6 +20,8 @@ properties:
                 they configure kea to listen on this interface name.
               pattern: "\\bname=pve\\b"
         vars:
+          type: object
+          description: "For the dhcp to work we need to tell the playbooks which lxc will serve as the main and which as the failover."
           required:
             - kea_dhcp_main
           properties:

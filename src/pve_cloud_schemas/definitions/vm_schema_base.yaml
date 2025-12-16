@@ -18,6 +18,9 @@ properties:
       - example-k8s-cluster
       - example-lxc-service
   static_includes:
+    description: |
+      This property contains specific hosts / stacks that need to be included for a schema extension. This way playbooks can statically
+      reference a host group and assume it to be a certain stack (e.g. postgres/haproxy/dhcp).
     type: object
   include_stacks:
     type: array
