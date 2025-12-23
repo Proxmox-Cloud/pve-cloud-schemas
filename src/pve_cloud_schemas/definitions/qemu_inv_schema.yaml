@@ -1,81 +1,92 @@
 title: "VM Inventory"
-inherit_schema: vm_schema_base.yaml
+inherit_schema: qemu_schema_base.yaml
 description: "Inventory for deploying qemu VMs on PVE."
 additionalProperties: false
-required:
-  - qemus
 properties:
-  qemus:
+  ingress_domains:
     type: array
-    description: "List of qemu vms for the stack."
+    description: |
+      Specific non ingress routing, via hostname lookup inside the proxy. This allows easy integration of 
+      standalone services like mailcow or other standalone deployments that do their own ingress termination.
+    items:
+      type: object
+      properties:
+        zone:
+          type: string
+          description: |
+            Internal zone that is registered in bind. In this case the playbooks will make records in bind
+            pointing to the vms of the stack.
+        names:
+          type: array
+          description: "Names of the zone that will be routed to vms of this stack."
+          items:
+            type: string
+        external:
+          type: boolean
+          description: |
+            Whether or not the routing will also bind to the external floating ip of our haproxy.
+  tcp_proxies:
+    type: array
+    description: "Raw tcp forwards on the clusters haproxy to k8s services exposed via nodeport."
     items:
       type: object
       additionalProperties: false
       required:
-        - disk
-        - parameters
+        - proxy_name
+        - haproxy_port
+        - node_port
       properties:
-        hostname:
+        proxy_name:
           type: string
-          description: "Optional unique hostname for this node, otherwise pet name random name will be generated."
-        vars:
-          type: object
-          description: "Custom variables for this node specifically, might be useful in your own custom playbooks."
-        target_host:
-          type: string
-          description: "Optional specific proxmox host you want to tie this node to on creation. Can of course still be moved afterwards. Cloud domain is implicit and should not be specified."
+          description: "Simple name for the forward. Will be rendered in haproxy configuration so it shouldnt contain special characters."
           examples:
-            - proxmox-host-B.proxmox-cluster-A
-        parameters:
-          type: object
-          description: "In accordance with pve qm cli tool, creation parameters mapped (key equals the --key part and value the passed value)."
-          examples:
-            - cores: 1
-              memory: 1024
-        network_config:
+            - gitlab-ssh
+            - example-postgres
+        haproxy_port:
+          type: number
+          description: "Frontend port of the proxmox clusters haproxy."
+        # todo: rename to machine_port and overwrite in kubespray schema
+        node_port:
+          type: number
+          description: "Nodeport of the k8s service."
+        proxy_snippet:
           type: string
-          description: "Cinit network config yaml string. Will be the last cfg piece that gets merged into the final cloudinit network config. Can be used for overrides."
-        disk:
-          type: object
-          additionalProperties: false
+          description: "Additional snippet that will be inserted into the haproxy listen block. Can be used to adjust the forwards settings."
+          examples: 
+            - |
+              # long running tcp connections that only rarely transmit data
+              # ssh client connection for example
+              timeout client 1h 
+              timeout server 1h 
+        external:
+          type: boolean
+          description: "Will also create a forward on the external floating ip of the proxy not only the internal."
+
+# when using tcp_proxies we need certain stacks included
+# into the sync playbooks for setup. for kubespray inv they are always required
+allOf:
+  - if:
+      required:
+        - tcp_proxies
+    then:
+      required:
+        - static_includes
+      properties:
+        static_includes:
           required:
-            - size
-            - pool
-          properties:
-            size:
-              type: string
-              description: "Size of the vms disk."
-              examples:
-                - 25G
-            options:
-              type: object
-              description: "Mount options"
-            pool:
-              type: string
-              description: "Ceph pool name the vms disk will be created in."
-  qemu_default_user:
-    type: string
-    description: "User for cinit."
-  qemu_hashed_pw:
-    type: string
-    description: Pw for default user defaults to hashed 'password' for debian cloud init image. Different cloud init images require different hash methods. You cannot use the same from debian for ubuntu for example.
-  qemu_base_parameters:
-    type: object
-    description: Base parameters applied to all qemus. passed to the proxmox qm cli tool for creating vm.
-  qemu_image_url:
-    type: string
-    description: http(s) download link for cloud init image.
-  qemu_keyboard_layout:
-    type: string
-    description: Keyboard layout for cloudinit.
-  qemu_network_config:
-    type: string
-    description: Optional qemu network config as a yaml string that is merged into the cloudinit network config of all qemus.
-  qemu_global_vars:
-    type: object
-    description: "Variables that will be applied set for all qemus vms."
-  plugin:
-    type: string
-    description: Id of ansible inventory plugin
-    enum:
-      - pxc.cloud.qemu_inv
+            - dhcp_stack
+            - proxy_stack
+            - postgres_stack
+  - if:
+      required:
+        - ingress_domains
+    then:
+      required:
+        - static_includes
+      properties:
+        static_includes:
+          required:
+            - dhcp_stack
+            - proxy_stack
+            - postgres_stack
+            - bind_stack

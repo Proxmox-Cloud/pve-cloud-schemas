@@ -1,0 +1,108 @@
+title: "VM Base Inventory"
+inherit_schema: vm_schema_base.yaml
+description: "Base inventory that gets inherited by qemu standalone and kubespray nodes."
+additionalProperties: false
+required:
+  - qemus
+properties:
+  static_includes:
+    description: |
+      For virtual machines we have the option to define tcp_proxies and ingress_domains. If those are set we need certain static includes.
+    type: object
+    additionalProperties: false
+    properties:
+      dhcp_stack:
+        type: string
+        description: "For interacting with kea reservations."
+        examples:
+          - dhcp.your-cloud.domain
+      proxy_stack:
+        type: string
+        description: "Reloading the proxy."
+        examples:
+          - proxy.your-cloud.domain
+      postgres_stack:
+        type: string
+        description: "The playbook needs the pve cloud postgres stack where state and general configuration is stored."
+        examples:
+          - patroni.your-cloud.domain
+      bind_stack:
+        type: string
+        description: "The playbook needs the bind stack to register the general masters recordset and for creating authoritative zones defined in cluster_cert_entries."
+        examples:
+          - bind.your-cloud.domain
+  qemus:
+    type: array
+    description: "List of qemu vms for the stack."
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - disk
+        - parameters
+      properties:
+        hostname:
+          type: string
+          description: "Optional unique hostname for this node, otherwise pet name random name will be generated."
+        vars:
+          type: object
+          description: "Custom variables for this node specifically, might be useful in your own custom playbooks."
+        target_host:
+          type: string
+          description: "Optional specific proxmox host you want to tie this node to on creation. Can of course still be moved afterwards. Cloud domain is implicit and should not be specified."
+          examples:
+            - proxmox-host-B.proxmox-cluster-A
+        parameters:
+          type: object
+          description: "In accordance with pve qm cli tool, creation parameters mapped (key equals the --key part and value the passed value)."
+          examples:
+            - cores: 1
+              memory: 1024
+        network_config:
+          type: string
+          description: "Cinit network config yaml string. Will be the last cfg piece that gets merged into the final cloudinit network config. Can be used for overrides."
+        disk:
+          type: object
+          additionalProperties: false
+          required:
+            - size
+            - pool
+          properties:
+            size:
+              type: string
+              description: "Size of the vms disk."
+              examples:
+                - 25G
+            options:
+              type: object
+              description: "Mount options"
+            pool:
+              type: string
+              description: "Ceph pool name the vms disk will be created in."
+
+  qemu_default_user:
+    type: string
+    description: "User for cinit."
+  qemu_hashed_pw:
+    type: string
+    description: Pw for default user defaults to hashed 'password' for debian cloud init image. Different cloud init images require different hash methods. You cannot use the same from debian for ubuntu for example.
+  qemu_base_parameters:
+    type: object
+    description: Base parameters applied to all qemus. passed to the proxmox qm cli tool for creating vm.
+  qemu_image_url:
+    type: string
+    description: http(s) download link for cloud init image.
+  qemu_keyboard_layout:
+    type: string
+    description: Keyboard layout for cloudinit.
+  qemu_network_config:
+    type: string
+    description: Optional qemu network config as a yaml string that is merged into the cloudinit network config of all qemus.
+  qemu_global_vars:
+    type: object
+    description: "Variables that will be applied set for all qemus vms."
+  plugin:
+    type: string
+    description: Id of ansible inventory plugin
+    enum:
+      - pxc.cloud.qemu_inv

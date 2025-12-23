@@ -1,9 +1,8 @@
 title: "K8s Kubespray Inventory"
-inherit_schema: qemu_inv_schema.yaml
+inherit_schema: qemu_base_schema.yaml
 description: "Inventory for deploying k8s clusters via kubespray on PVE."
 required:
   - cluster_cert_entries
-  - tcp_proxies
   - static_includes
   - qemus
 properties:
@@ -67,70 +66,17 @@ properties:
         apex_zone_san:
           type: boolean
           description: "Creates additional SAN for the zone, if you have *.example.com you will also get example.com in your certificate. Defaults to false."
-  tcp_proxies:
-    type: array
-    description: "Raw tcp forwards on the clusters haproxy to k8s services exposed via nodeport."
-    items:
-      type: object
-      additionalProperties: false
-      required:
-        - proxy_name
-        - haproxy_port
-        - node_port
-      properties:
-        proxy_name:
-          type: string
-          description: "Simple name for the forward. Will be rendered in haproxy configuration so it shouldnt contain special characters."
-          examples:
-            - gitlab-ssh
-            - example-postgres
-        haproxy_port:
-          type: number
-          description: "Frontend port of the proxmox clusters haproxy."
-        node_port:
-          type: number
-          description: "Nodeport of the k8s service."
-        proxy_snippet:
-          type: string
-          description: "Additional snippet that will be inserted into the haproxy listen block. Can be used to adjust the forwards settings."
-          examples: 
-            - |
-              # long running tcp connections that only rarely transmit data
-              # ssh client connection for example
-              timeout client 1h 
-              timeout server 1h 
-        external:
-          type: boolean
-          description: "Will also create a forward on the external floating ip of the proxy not only the internal."
+
   static_includes:
     type: object
     additionalProperties: false
+    # all from base are required for k8s
     required:
       - dhcp_stack
       - proxy_stack
       - postgres_stack
       - bind_stack
     properties:
-      dhcp_stack:
-        type: string
-        description: "The pxc.cloud.sync_kubespray playbook needs the dhcp stack to refresh the configuration after having made static reservations for kubernetes node ips."
-        examples:
-          - dhcp.your-cloud.domain
-      proxy_stack:
-        type: string
-        description: "The playbook needs to reload the central clusters haproxy for various forwarding specifications."
-        examples:
-          - proxy.your-cloud.domain
-      postgres_stack:
-        type: string
-        description: "The playbook needs the pve cloud postgres stack where state and general configuration is stored."
-        examples:
-          - patroni.your-cloud.domain
-      bind_stack:
-        type: string
-        description: "The playbook needs the bind stack to register the general masters recordset and for creating authoritative zones defined in cluster_cert_entries."
-        examples:
-          - bind.your-cloud.domain
       cache_stack:
         type: string
         description: "Cache stack to mount nfs for kubespray cache and apt cache. Assumes the cache lxc to have the hostname \"main\". WIP!"
