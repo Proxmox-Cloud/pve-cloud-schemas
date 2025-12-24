@@ -66,7 +66,6 @@ properties:
         apex_zone_san:
           type: boolean
           description: "Creates additional SAN for the zone, if you have *.example.com you will also get example.com in your certificate. Defaults to false."
-
   static_includes:
     type: object
     additionalProperties: false

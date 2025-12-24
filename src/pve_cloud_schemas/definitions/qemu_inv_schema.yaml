@@ -25,43 +25,7 @@ properties:
           type: boolean
           description: |
             Whether or not the routing will also bind to the external floating ip of our haproxy.
-  tcp_proxies:
-    type: array
-    description: "Raw tcp forwards on the clusters haproxy to k8s services exposed via nodeport."
-    items:
-      type: object
-      additionalProperties: false
-      required:
-        - proxy_name
-        - haproxy_port
-        - node_port
-      properties:
-        proxy_name:
-          type: string
-          description: "Simple name for the forward. Will be rendered in haproxy configuration so it shouldnt contain special characters."
-          examples:
-            - gitlab-ssh
-            - example-postgres
-        haproxy_port:
-          type: number
-          description: "Frontend port of the proxmox clusters haproxy."
-        # todo: rename to machine_port and overwrite in kubespray schema
-        node_port:
-          type: number
-          description: "Nodeport of the k8s service."
-        proxy_snippet:
-          type: string
-          description: "Additional snippet that will be inserted into the haproxy listen block. Can be used to adjust the forwards settings."
-          examples: 
-            - |
-              # long running tcp connections that only rarely transmit data
-              # ssh client connection for example
-              timeout client 1h 
-              timeout server 1h 
-        external:
-          type: boolean
-          description: "Will also create a forward on the external floating ip of the proxy not only the internal."
-
+            
 # when using tcp_proxies we need certain stacks included
 # into the sync playbooks for setup. for kubespray inv they are always required
 allOf:
