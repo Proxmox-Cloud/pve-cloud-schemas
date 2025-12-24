@@ -1,5 +1,5 @@
 title: "K8s Kubespray Inventory"
-inherit_schema: qemu_base_schema.yaml
+inherit_schema: qemu_schema_base.yaml
 description: "Inventory for deploying k8s clusters via kubespray on PVE."
 required:
   - cluster_cert_entries
