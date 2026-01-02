@@ -110,6 +110,8 @@ def dump_schemas():
             schema_loaded = load_inheritance(yaml.safe_load(f))
 
         schema_loaded.pop("inherit_schema", None) # remove the inheritance key if it exists
+
+        schema_loaded.pop("allOf", None) # todo: generate schema doc cannot handle this jsonschema method
         
         # dump the inherited schema
         with (dump_po / schema.name).open("w") as f:
@@ -123,6 +125,8 @@ def dump_schemas():
             schema_ext_loaded = yaml.safe_load(f)
 
         schema_ext_loaded.pop("extend_schema", None) # remove the extension key
+
+        schema_ext_loaded.pop("allOf", None) # todo: generate schema doc cannot handle this jsonschema method
 
         # write it
         with (dump_po / schema_ext.name).open("w") as f:

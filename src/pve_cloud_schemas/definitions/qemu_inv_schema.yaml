@@ -37,6 +37,7 @@ allOf:
         - static_includes
       properties:
         static_includes:
+          type: object
           required:
             - dhcp_stack
             - proxy_stack
@@ -49,6 +50,7 @@ allOf:
         - static_includes
       properties:
         static_includes:
+          type: object
           required:
             - dhcp_stack
             - proxy_stack
