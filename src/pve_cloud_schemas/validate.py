@@ -1,11 +1,10 @@
-import os
-import sys
-import jsonschema
-from importlib.resources import files
-import yaml
-from pathlib import Path
-import shutil
 import copy
+import sys
+from importlib.resources import files
+from pathlib import Path
+
+import jsonschema
+import yaml
 
 
 def recursive_merge(dict1, dict2):
@@ -37,11 +36,13 @@ def recursive_merge(dict1, dict2):
 def load_inheritance(loaded_schema):
     if "inherit_schema" in loaded_schema:
         # schema to inherit, drill down
-        with (files("pve_cloud_schemas.definitions") / loaded_schema["inherit_schema"]).open("r") as f:
+        with (
+            files("pve_cloud_schemas.definitions") / loaded_schema["inherit_schema"]
+        ).open("r") as f:
             inherit_schema = yaml.safe_load(f)
 
         # will keep recursing down to the absolute base schema
-        
+
         schema = load_inheritance(inherit_schema)
         return recursive_merge(schema, loaded_schema)
 
@@ -57,41 +58,49 @@ def validate_inventory(inventory, load_schema_ext=True):
     base_schema_name = inventory["plugin"].removeprefix("pxc.cloud.")
 
     # load schema with inheritance
-    with (files("pve_cloud_schemas.definitions") / f"{base_schema_name}_schema.yaml").open("r") as f:
+    with (
+        files("pve_cloud_schemas.definitions") / f"{base_schema_name}_schema.yaml"
+    ).open("r") as f:
         schema = load_inheritance(yaml.safe_load(f))
 
-    schema.pop("inherit_schema", None) # remove the inheritance key if it exists
+    schema.pop("inherit_schema", None)  # remove the inheritance key if it exists
 
     # add the playbook extension ontop
     if load_schema_ext:
         called_pve_cloud_playbook = None
         for arg in sys.argv:
             if arg.startswith("pxc.cloud."):
-                called_pve_cloud_playbook = arg.split('.')[-1].removeprefix("pxc.cloud.")
-            if arg.startswith("playbooks/"): # execution in e2e tests
-                called_pve_cloud_playbook = arg.removeprefix("playbooks/").removesuffix(".yaml")
+                called_pve_cloud_playbook = arg.split(".")[-1].removeprefix(
+                    "pxc.cloud."
+                )
+            if arg.startswith("playbooks/"):  # execution in e2e tests
+                called_pve_cloud_playbook = arg.removeprefix("playbooks/").removesuffix(
+                    ".yaml"
+                )
 
         if called_pve_cloud_playbook:
             # playbook call look for schema extension
-            extension_file = files("pve_cloud_schemas.extensions") / f"{called_pve_cloud_playbook}_schema_ext.yaml"
+            extension_file = (
+                files("pve_cloud_schemas.extensions")
+                / f"{called_pve_cloud_playbook}_schema_ext.yaml"
+            )
 
-            if extension_file.is_file(): # schema extension exists
+            if extension_file.is_file():  # schema extension exists
                 with extension_file.open("r") as f:
                     schema_ext = yaml.safe_load(f)
 
-                schema_ext.pop("extend_schema", None) # remove the extension key
+                schema_ext.pop("extend_schema", None)  # remove the extension key
 
-                # merge with base schema 
+                # merge with base schema
                 schema = recursive_merge(schema, schema_ext)
 
-    
     jsonschema.validate(instance=inventory, schema=schema)
 
 
 def validate_inventory_file():
     with open(sys.argv[1], "r") as f:
         inventory = yaml.safe_load(f)
-    
+
     validate_inventory(inventory)
 
 
@@ -109,10 +118,14 @@ def dump_schemas():
         with schema.open("r") as f:
             schema_loaded = load_inheritance(yaml.safe_load(f))
 
-        schema_loaded.pop("inherit_schema", None) # remove the inheritance key if it exists
+        schema_loaded.pop(
+            "inherit_schema", None
+        )  # remove the inheritance key if it exists
 
-        schema_loaded.pop("allOf", None) # todo: generate schema doc cannot handle this jsonschema method
-        
+        schema_loaded.pop(
+            "allOf", None
+        )  # todo: generate schema doc cannot handle this jsonschema method
+
         # dump the inherited schema
         with (dump_po / schema.name).open("w") as f:
             yaml.dump(schema_loaded, f, sort_keys=False, indent=2)
@@ -124,9 +137,11 @@ def dump_schemas():
         with schema_ext.open("r") as f:
             schema_ext_loaded = yaml.safe_load(f)
 
-        schema_ext_loaded.pop("extend_schema", None) # remove the extension key
+        schema_ext_loaded.pop("extend_schema", None)  # remove the extension key
 
-        schema_ext_loaded.pop("allOf", None) # todo: generate schema doc cannot handle this jsonschema method
+        schema_ext_loaded.pop(
+            "allOf", None
+        )  # todo: generate schema doc cannot handle this jsonschema method
 
         # write it
         with (dump_po / schema_ext.name).open("w") as f:
