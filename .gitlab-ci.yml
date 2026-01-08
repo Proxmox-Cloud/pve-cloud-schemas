@@ -76,3 +76,4 @@ format_source:
         $CI_COMMIT_TAG !~ /^release-all-[a-z]+$/
       when: on_success
     - when: never
+  resource_group: deploy-prod
