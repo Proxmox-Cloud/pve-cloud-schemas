@@ -9,7 +9,7 @@ license = "GPL-3.0-or-later"
 license-files = ["LICENSE.md"]
 dependencies = [
   "PyYAML==6.0.2",
-  "jsonschema==4.23.0",
+  "jsonschema==4.26.0",
 ]
 dynamic = ["version"]
 
