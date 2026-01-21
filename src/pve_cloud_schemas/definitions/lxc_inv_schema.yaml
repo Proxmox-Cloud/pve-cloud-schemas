@@ -54,7 +54,9 @@ properties:
         description: "Will use 2222 instead of 22 for ssh."
       install_prom_systemd_exporter:
         type: boolean
-        description: "Will install prometheus metrics exporter for systemd. This implements with pve cloud terraform monitoring modules."
+        description: |
+          Will install prometheus metrics exporter for systemd. This implements with pve cloud terraform monitoring modules. 
+          Will also make the lxc visible for discovery by monitoring.
     additionalProperties: true
   lxc_base_parameters:
     type: object
