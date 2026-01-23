@@ -157,8 +157,9 @@ properties:
     enum:
       - route53
       - ionos
+      - ionos_cloud
     description: | 
-      PVE Cloud included method for solving dns01 challenges. You need to have created the appropriate secrets under /etc/pve/cloud on your proxmox cluster.
+      PVE Cloud included method for solving dns01 challenges. You need to have created the appropriate cloud secrets created.
   plugin:
     type: string
     description: "Id of ansible inventory plugin, needs to be set exactly."
