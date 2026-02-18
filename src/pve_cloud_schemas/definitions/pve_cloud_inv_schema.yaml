@@ -121,6 +121,15 @@ properties:
               run it even before the pxc.cloud.setup_pve_clusters on this inventory.
             additionalProperties: true
             properties:
+              install_btrfs_root_prom_exporter:
+                type: boolean
+                description: |
+                  Set this to true if you installed the os on btrfs. This will install a prometheus exporter for btrfs aswell as enable degraded booting.
+              install_log2ram:
+                type: boolean
+                description: |
+                  This will install log2ram, moving logs to ram. If you are using the same disks for the os aswell as virtual machines, you should enable it,
+                  to ensure proxmox doesnt freeze up because of vm disk usage.
               disable_ipmi:
                 type: boolean
                 description: |

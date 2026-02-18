@@ -35,3 +35,8 @@ properties:
             keepalived_master:
               description: One LXC should have this set to true the other to false.
               type: boolean
+  lxc_global_vars:
+    properties:
+      haproxy_defaults_section:
+        type: string
+        description: "Multiline default content to append the defauls block. Use this to overwrite timeouts for example."
