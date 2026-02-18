@@ -10,7 +10,9 @@ trigger_argo_wf:
     # debug
     - echo $CI_COMMIT_BRANCH
     - echo $CI_COMMIT_REF_NAME
+    - echo $CI_COMMIT_REF_SLUG
     - echo "git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE"
+    - printenv
 
     - |
       argo submit -n argo -p "source_branch=$CI_COMMIT_BRANCH" \
