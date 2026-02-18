@@ -14,7 +14,8 @@ trigger_argo_wf:
     - echo "git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE"
     - printenv
     - git branch
-
+    - git name-rev --name-only $CI_COMMIT_SHA
+    - git branch -a --contains $CI_COMMIT_SHA
     - |
       argo submit -n argo -p "source_branch=$CI_COMMIT_BRANCH" \
         -p "git_host=$CI_SERVER_HOST" -p "git_pull_prefix=git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE" \
