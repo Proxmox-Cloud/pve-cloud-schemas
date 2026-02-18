@@ -19,6 +19,8 @@ trigger_argo_wf:
     - git name-rev --name-only $CI_COMMIT_SHA
     - git branch -a --contains $CI_COMMIT_SHA | head -n 1
 
+    - git for-each-ref | grep ^$CI_COMMIT_SHA | grep origin | grep -v HEAD | head -n1 | sed "s/.*\///"
+
     - |
       argo submit -n argo -p "source_branch=$CI_COMMIT_BRANCH" \
         -p "git_host=$CI_SERVER_HOST" -p "git_pull_prefix=git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE" \
