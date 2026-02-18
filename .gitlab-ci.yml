@@ -20,11 +20,8 @@ trigger_argo_wf:
     - git branch -a --contains $CI_COMMIT_SHA
 
     - |
-      ACTUAL_BRANCH=$(curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/commits/$CI_COMMIT_SHA/refs?type=branch" \
-        | jq -r '.[0].name')
+      curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/commits/$CI_COMMIT_SHA/refs?type=branch"
     
-    - echo "The branch is $ACTUAL_BRANCH"
     - |
       argo submit -n argo -p "source_branch=$CI_COMMIT_BRANCH" \
         -p "git_host=$CI_SERVER_HOST" -p "git_pull_prefix=git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE" \
