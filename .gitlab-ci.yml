@@ -9,6 +9,7 @@ trigger_argo_wf:
 
     # debug
     - echo $CI_COMMIT_BRANCH
+    - echo $CI_COMMIT_REF_NAME
     - echo "git@$CI_SERVER_HOST:$CI_PROJECT_NAMESPACE"
 
     - |
