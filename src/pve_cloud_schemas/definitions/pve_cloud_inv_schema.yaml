@@ -135,7 +135,29 @@ properties:
                 description: |
                   If specified will disable the openipmi power managemend systemd service. This might fail on proxmox
                   hosts that dont support it and clutters up monitoring.
-       
+              wol:
+                type: object
+                description: Definition for wakeonlan network interface.
+                properties:
+                  iface:
+                    type: string
+                    description: The interface for which wakeonlan should be activated.
+                  bridge:
+                    type: string
+                    description: The bridge that gets the post-up definition for wol.
+              tso_gso_fixxes:
+                type: array
+                description: List of network interfaces that should have certain features turned off (for old network hardware).
+                items:
+                  type: object
+                  properties:
+                    iface:
+                      type: string
+                    bridge:
+                      type: string
+                      description: The bridge that gets the post-up definition for applying the fix (turning off network features).
+
+
   bind_zone_admin_email:
     type: string
     description: "Required adminstrator email in bind format for bind zones."
