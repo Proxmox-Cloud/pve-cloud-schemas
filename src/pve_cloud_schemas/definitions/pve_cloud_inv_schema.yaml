@@ -163,11 +163,12 @@ properties:
     description: "Required adminstrator email in bind format for bind zones."
     examples: 
       - admin.example.com.
+
   bind_forward_zones:
     type: array
     description: |
-      Creates zone in bind and delegation ns records to the specified nameservers. This is very useful if you have other nameservers with 
-      their own authoritative zones you want resolved within the cloud.
+      Allows forwarding of specific zones to specific nameservers. This is useful for domains that are not owned by this cloud. For delegating sub zones 
+      resort to the terraform dns provider alongside the kubernetes cluster that declares the parent zone in its inventory file.
     items:
       type: object
       properties:
