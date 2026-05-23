@@ -137,7 +137,10 @@ properties:
                   hosts that dont support it and clutters up monitoring.
               wol:
                 type: object
-                description: Definition for wakeonlan network interface.
+                description: |
+                  Definition for wakeonlan network interface. Will use ethtool and post-up commands to keep it enabled on the nic.
+                  You also might have to adjust settings in the bios, enable WoL there and also tune the power options for receiving the
+                  magic package. Turn off settings like low power soft off, then you can use `wakeonlan MAC_ADDR` to boot your host.
                 properties:
                   iface:
                     type: string
