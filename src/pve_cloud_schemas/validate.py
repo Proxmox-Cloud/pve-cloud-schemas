@@ -50,6 +50,16 @@ def load_inheritance(loaded_schema):
     return loaded_schema
 
 
+def validate_cloud_dyn_inv(inventory):
+    # load dyn inv schema, this is the only schema that is not linked to an custom ansible inventory
+    # via the plugin: key
+    with (
+        files("pve_cloud_schemas.definitions") / f"pve_cloud_dyn_inv_schema.yaml"
+    ).open("r") as f:
+        schema = yaml.safe_load(f)
+        
+    jsonschema.validate(instance=inventory, schema=schema)
+
 # this method gets called indirectly via the pve_cloud ansible collection
 # if there is a pxc.cloud collection playbook is passed in the system args
 # we can load a schema extension aswell

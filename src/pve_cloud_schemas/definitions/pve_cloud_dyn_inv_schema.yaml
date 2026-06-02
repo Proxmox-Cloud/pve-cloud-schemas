@@ -1,0 +1,42 @@
+type: object
+title: "Dynamic local pve cloud schema."
+description: "This is the local schema file for the inventory created by `pvcli connect-cluster` and `pvcli connect-remote-cluster`"
+additionalProperties: false
+patternProperties:
+  '^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*$':
+    type: object
+    title: "Inventory cloud domain."
+    additionalProperties: false
+    description: "The top level keys are the cloud domains that the control node machine is connected to via the `pvcli connect...` commands."
+    patternProperties:
+      '^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$':
+        type: object
+        title: "Proxmox cluster name."
+        additionalProperties: false
+        description: "The name of the proxmox cluster (set in the proxmox ui during creation)."
+        required:
+          - pve_hosts
+        properties:
+          pve_jump_hosts:
+            type: array
+            description: "Optional ip list of proxmox jump hosts (they will be used cluster wide for accessing other proxmox hosts and vms)."
+            items:
+              type: string
+          pve_hosts:
+            type: object
+            description: "Hosts in the cluster, should be added via local ip and the --host-iface parameter in `pvcli connect...`"
+            patternProperties:
+              '^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$':
+                type: object
+                title: Proxmox hostname
+                additionalProperties: false
+                required:
+                  - ansible_host
+                  - ansible_user
+                properties:
+                  ansbile_host:
+                    type: string
+                    description: IPv4 Address of the host, should be a private ip. For remote hosts, they should be accessed via jumphosts.
+                  ansible_user:
+                    type: string
+                    description: Ansible user to connect to the proxmox with, proxmox uses root per default.
