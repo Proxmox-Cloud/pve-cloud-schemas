@@ -34,7 +34,7 @@ patternProperties:
                   - ansible_host
                   - ansible_user
                 properties:
-                  ansbile_host:
+                  ansible_host:
                     type: string
                     description: IPv4 Address of the host, should be a private ip. For remote hosts, they should be accessed via jumphosts.
                   ansible_user:
