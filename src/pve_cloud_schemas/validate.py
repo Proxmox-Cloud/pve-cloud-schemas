@@ -57,8 +57,9 @@ def validate_cloud_dyn_inv(inventory):
         files("pve_cloud_schemas.definitions") / f"pve_cloud_dyn_inv_schema.yaml"
     ).open("r") as f:
         schema = yaml.safe_load(f)
-        
+
     jsonschema.validate(instance=inventory, schema=schema)
+
 
 # this method gets called indirectly via the pve_cloud ansible collection
 # if there is a pxc.cloud collection playbook is passed in the system args
