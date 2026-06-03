@@ -115,11 +115,8 @@ properties:
           pve_host_vars:
             type: object
             description: |
-              Optional variables that will be specifically set for a pve host. Key is the simple host name. 
-              This can be used to build your specialized pve cluster setup playbooks. You can do things like
-              wakeonlan, driver and network configuration with these easily. Simply create your own playbook and
-              run it even before the pxc.cloud.setup_pve_clusters on this inventory.
-            additionalProperties: true
+              Optional variables that will be specifically set for a pve host. Key is the simple host name.
+            additionalProperties: false
             properties:
               install_btrfs_root_prom_exporter:
                 type: boolean
@@ -148,18 +145,27 @@ properties:
                   bridge:
                     type: string
                     description: The bridge that gets the post-up definition for wol.
-              tso_gso_fixxes:
+              net_offloading_fixxes:
                 type: array
-                description: List of network interfaces that should have certain features turned off (for old network hardware).
+                description: Disable pesky network offloaing features that break upon virtualization.
                 items:
                   type: object
                   properties:
                     iface:
                       type: string
+                      description: The interface for which to disable specified network offloading features.
                     bridge:
                       type: string
-                      description: The bridge that gets the post-up definition for applying the fix (turning off network features).
-
+                      description: The bridge that gets the post-up definition for applying the fix that will receive the post-up directive.
+                    disable_features:
+                      type: array
+                      description: List of network features to disable for the interface.
+                      items:
+                        type: string
+                        examples:
+                          - tso
+                          - gso
+                          - gro
 
   bind_zone_admin_email:
     type: string
