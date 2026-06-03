@@ -117,55 +117,60 @@ properties:
             description: |
               Optional variables that will be specifically set for a pve host. Key is the simple host name.
             additionalProperties: false
-            properties:
-              install_btrfs_root_prom_exporter:
-                type: boolean
-                description: |
-                  Set this to true if you installed the os on btrfs. This will install a prometheus exporter for btrfs aswell as enable degraded booting.
-              install_log2ram:
-                type: boolean
-                description: |
-                  This will install log2ram, moving logs to ram. If you are using the same disks for the os aswell as virtual machines, you should enable it,
-                  to ensure proxmox doesnt freeze up because of vm disk usage.
-              disable_ipmi:
-                type: boolean
-                description: |
-                  If specified will disable the openipmi power managemend systemd service. This might fail on proxmox
-                  hosts that dont support it and clutters up monitoring.
-              wol:
+            patternProperties:
+              '^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$':
                 type: object
-                description: |
-                  Definition for wakeonlan network interface. Will use ethtool and post-up commands to keep it enabled on the nic.
-                  You also might have to adjust settings in the bios, enable WoL there and also tune the power options for receiving the
-                  magic package. Turn off settings like low power soft off, then you can use `wakeonlan MAC_ADDR` to boot your host.
+                title: Proxmox hostname
+                additionalProperties: false
                 properties:
-                  iface:
-                    type: string
-                    description: The interface for which wakeonlan should be activated.
-                  bridge:
-                    type: string
-                    description: The bridge that gets the post-up definition for wol.
-              net_offloading_fixxes:
-                type: array
-                description: Disable pesky network offloaing features that break upon virtualization.
-                items:
-                  type: object
-                  properties:
-                    iface:
-                      type: string
-                      description: The interface for which to disable specified network offloading features.
-                    bridge:
-                      type: string
-                      description: The bridge that gets the post-up definition for applying the fix that will receive the post-up directive.
-                    disable_features:
-                      type: array
-                      description: List of network features to disable for the interface.
-                      items:
+                  install_btrfs_root_prom_exporter:
+                    type: boolean
+                    description: |
+                      Set this to true if you installed the os on btrfs. This will install a prometheus exporter for btrfs aswell as enable degraded booting.
+                  install_log2ram:
+                    type: boolean
+                    description: |
+                      This will install log2ram, moving logs to ram. If you are using the same disks for the os aswell as virtual machines, you should enable it,
+                      to ensure proxmox doesnt freeze up because of vm disk usage.
+                  disable_ipmi:
+                    type: boolean
+                    description: |
+                      If specified will disable the openipmi power managemend systemd service. This might fail on proxmox
+                      hosts that dont support it and clutters up monitoring.
+                  wol:
+                    type: object
+                    description: |
+                      Definition for wakeonlan network interface. Will use ethtool and post-up commands to keep it enabled on the nic.
+                      You also might have to adjust settings in the bios, enable WoL there and also tune the power options for receiving the
+                      magic package. Turn off settings like low power soft off, then you can use `wakeonlan MAC_ADDR` to boot your host.
+                    properties:
+                      iface:
                         type: string
-                        examples:
-                          - tso
-                          - gso
-                          - gro
+                        description: The interface for which wakeonlan should be activated.
+                      bridge:
+                        type: string
+                        description: The bridge that gets the post-up definition for wol.
+                  net_offloading_fixxes:
+                    type: array
+                    description: Disable pesky network offloaing features that break upon virtualization.
+                    items:
+                      type: object
+                      properties:
+                        iface:
+                          type: string
+                          description: The interface for which to disable specified network offloading features.
+                        bridge:
+                          type: string
+                          description: The bridge that gets the post-up definition for applying the fix that will receive the post-up directive.
+                        disable_features:
+                          type: array
+                          description: List of network features to disable for the interface.
+                          items:
+                            type: string
+                            examples:
+                              - tso
+                              - gso
+                              - gro
 
   bind_zone_admin_email:
     type: string
