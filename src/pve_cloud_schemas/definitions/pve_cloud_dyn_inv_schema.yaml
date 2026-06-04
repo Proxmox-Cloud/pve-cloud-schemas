@@ -17,9 +17,9 @@ patternProperties:
         required:
           - pve_hosts
         properties:
-          pve_jump_hosts:
+          jump_hosts:
             type: array
-            description: "Optional ip list of proxmox jump hosts (they will be used cluster wide for accessing other proxmox hosts and vms)."
+            description: "Optional ip list of root user jump hosts (they will be used cluster wide for accessing other proxmox hosts and vms). Can be a proxmox host itself."
             items:
               type: string
           pve_hosts:
