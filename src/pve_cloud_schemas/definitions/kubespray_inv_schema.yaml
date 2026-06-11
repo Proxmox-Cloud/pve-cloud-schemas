@@ -76,10 +76,15 @@ properties:
       - postgres_stack
       - bind_stack
     properties:
-      cache_stack:
+      dhcp_stack:
         type: string
-        description: "Cache stack to mount nfs for kubespray cache and apt cache. Assumes the cache lxc to have the hostname \"main\". WIP!"
-
+      proxy_stack:
+        type: string
+      postgres_stack:
+        type: string
+      bind_stack:
+        type: string
+        
   # inherits this config from the qemu inv, only adds k8s_roles
   qemus:
     description: "Nodes for the cluster in form of qemu vms."
