@@ -76,6 +76,10 @@ properties:
     description: "Additional arpa zones which should be created and managed in the dns / dhcp ddns."
     items:
       type: string
+    examples:
+      - "2.168.192.in-addr.arpa"
+      - "3.168.192.in-addr.arpa"
+      - "0.10-in-addr.arpa"
   pve_clusters:
     type: object
     additionalProperties: false
