@@ -127,6 +127,11 @@ properties:
                 title: Proxmox hostname
                 additionalProperties: false
                 properties:
+                  pve_corosync_vote:
+                    type: boolean
+                    description: |
+                      Set this to false to remove the corosync vote of this proxmox host, this ideal for hosts
+                      that get booted up conditionally. Defaults to true.
                   install_btrfs_root_prom_exporter:
                     type: boolean
                     description: |
