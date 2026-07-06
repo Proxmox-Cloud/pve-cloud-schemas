@@ -115,6 +115,21 @@ def validate_inventory_file():
     validate_inventory(inventory)
 
 
+def get_dynamic_cluster_vars_schema():
+    with (files("pve_cloud_schemas.definitions") / "pve_cloud_inv_schema.yaml").open("r") as f:
+        cloud_inv = yaml.safe_load(f)
+
+    # same logic as in pve_cloud_inv.py where we merge the cluster specific vars over the general cloud vars
+    cloud_inv_pat_props = cloud_inv["properties"]["pve_clusters"]["patternProperties"]
+    cloud_inv["properties"] = recursive_merge(cloud_inv["properties"], cloud_inv_pat_props[next(iter(cloud_inv_pat_props))]["properties"])
+    # also load in extension properties that get created dynamically also in teh inv file
+
+    with (files("pve_cloud_schemas.extensions") / "cluster_vars_ext.yaml").open("r") as f:
+        cluster_vars_ext = yaml.safe_load(f)
+
+    return recursive_merge(cloud_inv, cluster_vars_ext)
+
+
 def dump_schemas():
     dump_po = Path(sys.argv[1])
     dump_po.mkdir(parents=True, exist_ok=True)
@@ -157,3 +172,17 @@ def dump_schemas():
         # write it
         with (dump_po / schema_ext.name).open("w") as f:
             yaml.dump(schema_ext_loaded, f, sort_keys=False, indent=2)
+
+    # also dump the custom cluster vars schema
+    with (dump_po / "custom_cluster_vars_schema.yaml").open("w") as f:
+        yaml.dump(get_dynamic_cluster_vars_schema(), f, sort_keys=False, indent=2)
+
+
+# custom validation function based on the pve cloud inventory schema,
+# from this schema there is an implicit derivative created in pve_cloud_inv.py
+# this schema takes a part of the original schema and merges it into the top creating
+# a cluster scoped variant of the schema. Also the inventory plugin adds some custom
+# on the fly variables to it, these are enforced via the cluster_vars_ext.yaml schema
+# extension
+def validate_cluster_vars(cluster_vars):
+    jsonschema.validate(instance=cluster_vars, schema=get_dynamic_cluster_vars_schema())
