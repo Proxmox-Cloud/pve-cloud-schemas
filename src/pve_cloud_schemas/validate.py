@@ -134,7 +134,14 @@ def get_dynamic_cluster_vars_schema():
     ) as f:
         cluster_vars_ext = yaml.safe_load(f)
 
-    return recursive_merge(cloud_inv, cluster_vars_ext)
+    cluster_vars_schema = recursive_merge(cloud_inv, cluster_vars_ext)
+
+    # remove inheritance keys if present
+    cluster_vars_schema.pop("extend_schema", None)  # remove the extension key
+    cluster_vars_schema.pop("inherit_schema", None)
+    # allOf not handled!
+
+    return cluster_vars_schema
 
 
 def dump_schemas():

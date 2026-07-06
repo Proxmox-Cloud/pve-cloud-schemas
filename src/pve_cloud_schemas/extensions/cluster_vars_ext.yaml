@@ -1,0 +1,17 @@
+title: "Cluster vars extension."
+description: "Cluster vars extension for custom schema based on functions in validate.py and pve_cloud_inv.py dynamic inventory."
+extend_schema: pve_cloud_inv_schema.yaml
+required:
+  - pve_cloud_collection_version
+  - py_pve_cloud_version
+  - pve_cluster_name
+properties:
+  pve_cloud_collection_version:
+    type: string
+    description: "Dynamic property set by pve_cloud_inv for validation of the collections version."
+  py_pve_cloud_version:
+    type: string
+    description: "Dynamic property for validation of the core python pve cloud library in use."
+  pve_cluster_name:
+    type: string
+    description: "Self reference of the cluster name for convinient access."
