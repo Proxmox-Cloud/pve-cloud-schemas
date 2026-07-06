@@ -116,15 +116,22 @@ def validate_inventory_file():
 
 
 def get_dynamic_cluster_vars_schema():
-    with (files("pve_cloud_schemas.definitions") / "pve_cloud_inv_schema.yaml").open("r") as f:
+    with (files("pve_cloud_schemas.definitions") / "pve_cloud_inv_schema.yaml").open(
+        "r"
+    ) as f:
         cloud_inv = yaml.safe_load(f)
 
     # same logic as in pve_cloud_inv.py where we merge the cluster specific vars over the general cloud vars
     cloud_inv_pat_props = cloud_inv["properties"]["pve_clusters"]["patternProperties"]
-    cloud_inv["properties"] = recursive_merge(cloud_inv["properties"], cloud_inv_pat_props[next(iter(cloud_inv_pat_props))]["properties"])
+    cloud_inv["properties"] = recursive_merge(
+        cloud_inv["properties"],
+        cloud_inv_pat_props[next(iter(cloud_inv_pat_props))]["properties"],
+    )
     # also load in extension properties that get created dynamically also in teh inv file
 
-    with (files("pve_cloud_schemas.extensions") / "cluster_vars_ext.yaml").open("r") as f:
+    with (files("pve_cloud_schemas.extensions") / "cluster_vars_ext.yaml").open(
+        "r"
+    ) as f:
         cluster_vars_ext = yaml.safe_load(f)
 
     return recursive_merge(cloud_inv, cluster_vars_ext)
