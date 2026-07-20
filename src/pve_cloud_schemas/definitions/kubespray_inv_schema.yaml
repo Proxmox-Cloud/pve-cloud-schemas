@@ -91,6 +91,19 @@ properties:
     items:
       required:
         - k8s_roles
+      # if one passthrough disk id was set then the qemu has to be bound to a host
+      # the admin has to manually pick the right one containing the physical disks
+      if:
+        required:
+          - zfs_localpv_csi_disks
+        properties:
+          zfs_localpv_csi_disks:
+            contains:
+              required:
+                - via_passthrough
+      then:
+        required:
+          - target_host
       properties:
         k8s_roles:
           type: array
@@ -100,6 +113,60 @@ properties:
             enum:
               - master
               - worker
+        zfs_localpv_csi_disks:
+          type: array
+          description: |
+            Additional disks, either passed through or from storage (discouraged), that will be merged into a single zpool (no replication),
+            and will be made available for openebs zfs localpv driver for k8s volumes. Currently the driver only supports zvol pvcs for intercompat.
+          items:
+            type: object
+            additionalProperties: false
+            # needs to have either passthrough or from storage defined
+            oneOf:
+              - required:
+                  - via_passthrough
+              - required:
+                  - from_storage
+            properties:
+              via_passthrough:
+                type: object
+                additionalProperties: false
+                required:
+                  - disk_id
+                  - options
+                properties:
+                  disk_id:
+                    type: string
+                    description: "/dev/disk/by-id of disk on target_host of the vm to passthrough. This is the recommended way for production systems."
+                  options:
+                    type: object
+                    description: "Options passed to the virtio scsi controller."
+              from_storage:
+                type: object
+                description: |
+                  It is also possible to create the disk from any proxmox conform storage that provides block devices, this however
+                  is not recommended for production systems, as zfs excels in having direct access to the real hard drive. This is however
+                  useful in testing scenarios.
+                required:
+                  - size
+                  - options
+                  - pool
+                additionalProperties: false
+                properties:
+                  size:
+                    type: string
+                    description: "Size of the vms disk. Only supports setting size in gigabytes."
+                    pattern: '^\d+G$'
+                    examples:
+                      - 25G
+                  options:
+                    type: object
+                    description: "Mount options"
+                  pool:
+                    type: string
+                    description: "Proxmox storage pool name."
+
+
   ceph_csi_sc_pools:
     type: array
     description: "Ceph pools that will be made available to the clusters Ceph CSI driver (optional)."

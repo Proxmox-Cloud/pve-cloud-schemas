@@ -67,6 +67,9 @@ properties:
           required:
             - size
             - pool
+            # this is set under the assumption that its good practise to always pass it
+            # the bootstrap_vm role assumes this is always present, can be set to {}
+            - options
           properties:
             size:
               type: string
