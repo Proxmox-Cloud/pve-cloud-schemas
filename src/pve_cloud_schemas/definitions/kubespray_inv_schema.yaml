@@ -104,6 +104,17 @@ properties:
       then:
         required:
           - target_host
+      # when defining zfs csi pool / disks they both have to be defined
+      oneOf:
+        - required:
+            - zpool_csi_parameters
+            - zfs_localpv_csi_disks
+        - not:
+            anyOf:
+              - required:
+                  - zpool_csi_parameters
+              - required:
+                  - zfs_localpv_csi_disks
       properties:
         k8s_roles:
           type: array
@@ -113,10 +124,45 @@ properties:
             enum:
               - master
               - worker
+        zpool_csi_parameters:
+          type: object
+          description: "Parameters for creating zfs zpool used for openebs csi, passed to community.general.zpool module."
+          additionalProperties: false
+          required:
+            - pool_properties
+            - vdevs
+          properties:
+            pool_properties:
+              description: "See the community.general.zpool module."
+              type: object
+            vdevs:
+              description: |
+                Default type for vdevs is stripe, in this case there should be only passed one disk per vdev and simply create multiple vdevs,
+                otherwise the zpool module will loose idempotency.
+              type: array
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                  - disks
+                properties:
+                  disks:
+                    type: array
+                    items:
+                      type: string
+                      examples:
+                        - /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1-pxzfs
+                      description: |
+                        Here you should ideally pass the disk via /dev/disk/by-id, disks created with zfs_localpv_csi_disks will always
+                        adhere to the following schema: \"scsi-0QEMU_QEMU_HARDDISK_scsi\" + index number of disk in zfs_localpv_csi_disks array (starting at 1) + \"-pxzfs\". The creation of the zpool based on this is made by an experimental fork of the community.general.zpool module! Use with caution!
+                  role:
+                    type: string
+                  type:
+                    type: string
         zfs_localpv_csi_disks:
           type: array
           description: |
-            Additional disks, either passed through or from storage (discouraged), that will be merged into a single zpool (no replication),
+            Additional disks, either passed through or from storage (discouraged / primarily for e2e), that will be merged into a single zpool (no replication),
             and will be made available for openebs zfs localpv driver for k8s volumes. Currently the driver only supports zvol pvcs for intercompat.
           items:
             type: object

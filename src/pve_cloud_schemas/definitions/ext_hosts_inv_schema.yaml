@@ -1,0 +1,25 @@
+type: object
+title: "External Hosts Inventory"
+description: "Generic inventory file for accessing external, non proxmox cloud hosts in a proxmox cloud context."
+additionalProperties: false
+required:
+  - pve_cloud_domain
+  - target_cluster
+  - host_groups
+properties:
+  pve_cloud_domain:
+    type: string
+    description: "Cloud domain to connect to."
+    examples:
+      - your-cloud.example.com
+  target_cluster:
+    type: string
+    description: "Target cluster we want to use inside the cloud (proxmox cluster name)."
+  plugin:
+    type: string
+    description: "Id of ansible inventory plugin, needs to be set exactly."
+    enum:
+      - pxc.cloud.ext_hosts_inv
+  host_groups:
+    type: object
+    description: "Generic ansible hosts."

@@ -81,7 +81,29 @@ properties:
               description: "Mount options"
             pool:
               type: string
-              description: "Ceph pool name the vms disk will be created in."
+              description: "Proxmox storage name the vms disk will be created in."
+        additional_disks:
+          type: array
+          description: "Identical schema in array form to the main disk property."
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - size
+              - pool
+              - options
+            properties:
+              size:
+                type: string
+                pattern: "^\\d+G$"
+                description: "Size of the created disk, has to be in Gigabytes."
+                examples:
+                  - 25G
+              options:
+                type: object
+              pool:
+                type: string
+
   tcp_proxies:
     type: array
     description: "Raw tcp forwards on the clusters haproxy to k8s services exposed via nodeport."
