@@ -146,6 +146,15 @@ properties:
                     description: |
                       If specified will disable the openipmi power managemend systemd service. This might fail on proxmox
                       hosts that dont support it and clutters up monitoring.
+
+                  # todo: this is a hacky solution, and should probably be replaced by a more fine grained script
+                  # that considers non hostid owned zfs systems and discards them with a warning
+                  zfs_scan_error_as_warn:
+                    type: boolean
+                    description: |
+                      If specified will set SuccessExitStatus=1 for zfs-import-scan systemd service. When using zfs localpv passthrough of disks for openebs,
+                      this scan service will continually fail because it tries to scan and import the disk owned by the kubernetes vm. zpool import (slop machine output)
+                      does not crash / stop on failing to import a device but will continue going.
                   wol:
                     type: object
                     description: |
