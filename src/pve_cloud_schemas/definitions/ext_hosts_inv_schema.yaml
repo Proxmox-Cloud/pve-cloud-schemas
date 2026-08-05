@@ -5,6 +5,7 @@ additionalProperties: false
 required:
   - pve_cloud_domain
   - target_cluster
+  - external_stack_name
   - host_groups
 properties:
   pve_cloud_domain:
@@ -15,6 +16,9 @@ properties:
   target_cluster:
     type: string
     description: "Target cluster we want to use inside the cloud (proxmox cluster name)."
+  external_stack_name:
+    type: string
+    description: "General stack name of this external inventory / project."
   plugin:
     type: string
     description: "Id of ansible inventory plugin, needs to be set exactly."
