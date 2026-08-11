@@ -6,7 +6,6 @@ required:
   - pve_cloud_domain
   - target_cluster
   - external_stack_name
-  - host_groups
 properties:
   pve_cloud_domain:
     type: string
@@ -27,3 +26,122 @@ properties:
   host_groups:
     type: object
     description: "Generic ansible hosts."
+  typed_host_groups:
+    type: object
+    additionalProperties: false
+    description: |
+      Specialized hosts / groups with typed vars needed for running specific pxc playbooks that are available for external non proxmox hosts.
+    properties:
+      k0s_edge:
+        type: object
+        description: "K0s edge system on apt compatible systems (debian, ubuntu). Currently only supports single node edge systems."
+        additionalProperties: false
+        required:
+          - k0s_single
+        properties:
+          k0s_single:
+            type: object
+            description: "Host that will be installed as k0s single node."
+            required:
+              - ansible_host
+              - ansible_user
+              - zpool_csi_parameters
+            properties:
+              ansible_host:
+                type: string
+              ansible_user:
+                type: string
+              # variables used by the install_k0s_edge playbook
+              k0s_conf_local_path:
+                type: string
+                description: "Local path on the control node for k0s.yaml config that should be used for the install process."
+              k0s_install_args:
+                type: object
+                description: "Additional args in key value format that will be rendered as --$KEY='$VALUE' and passed to the k0s install command."
+              # todo: the same should be implemented for kubespray
+              zfs_containerd_dataset:
+                type: boolean
+                description: "When set to true will create / move existing containerd directory of /var/lib/k0s/containerd to a zfs dataset. Setting this retroactively will stop and restart all containers."
+              zpool_csi_parameters:
+                type: object
+                description: "Check pxc.cloud.kubespray_inv schema for detailed descriptions of these parameters."
+                additionalProperties: false
+                required:
+                  - pool_properties
+                  - vdevs
+                properties:
+                  pool_properties:
+                    type: object
+                  vdevs:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - disks
+                      properties:
+                        disks:
+                          type: array
+                          items:
+                            type: string
+                        role:
+                          type: string
+                        type:
+                          type: string
+      backup_daemon:
+        type: object
+        description: "External host to turn into a backup server for proxmox cloud kubernetes systems."
+        additionalProperties: false
+        required:
+          - bdd_server
+        properties:
+          bdd_server:
+            type: object
+            required:
+              - ansible_host
+              - ansible_user
+              # todo: either require use existing or zpool params
+            properties:
+              ansible_host:
+                type: string
+              ansible_user:
+                type: string
+              use_existing_zpool:
+                type: object
+                description: |
+                  When this is specified the backup server will use the existing pool and create its own sub dataset for storing backups at
+                  $EXISTING_POOL/sub-bdd.
+                required:
+                  - pool_name
+                properties:
+                  pool_name:
+                    type: string
+                    description: "Name of the existing zpool to use."
+              zpool_backup_parameters:
+                type: object
+                description: |
+                  Check pxc.cloud.kubespray_inv schema for detailed descriptions of these parameters. The playbook will create the core
+                  pool named tank-bdd and will create a sub dataset for any stack that send backups to it.
+                additionalProperties: false
+                required:
+                  - pool_properties
+                  - vdevs
+                properties:
+                  pool_properties:
+                    type: object
+                  vdevs:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                        - disks
+                      properties:
+                        disks:
+                          type: array
+                          items:
+                            type: string
+                        role:
+                          type: string
+                        type:
+                          type: string
