@@ -40,6 +40,21 @@ properties:
       required:
         - disk
         - parameters
+
+      # when you set a disk via passthrough /dev/disk/by-id the qemu has to be
+      # assigned to a specific pve host
+      if:
+        required:
+          - additional_disks
+        properties:
+          additional_disks:
+            contains:
+              required:
+                - via_passthrough
+      then:
+        required:
+          - target_host
+
       properties:
         hostname:
           type: string
@@ -84,25 +99,47 @@ properties:
               description: "Proxmox storage name the vms disk will be created in."
         additional_disks:
           type: array
-          description: "Identical schema in array form to the main disk property."
           items:
             type: object
             additionalProperties: false
-            required:
-              - size
-              - pool
-              - options
+            # needs to have either passthrough or from storage defined
+            oneOf:
+              - required:
+                  - via_passthrough
+              - required:
+                  - from_storage
             properties:
-              size:
-                type: string
-                pattern: "^\\d+G$"
-                description: "Size of the created disk, has to be in Gigabytes."
-                examples:
-                  - 25G
-              options:
+              via_passthrough:
                 type: object
-              pool:
-                type: string
+                additionalProperties: false
+                required:
+                  - disk_id
+                  - options
+                properties:
+                  disk_id:
+                    type: string
+                    description: "/dev/disk/by-id of disk on target_host of the vm to passthrough. This is the recommended way for production systems."
+                  options:
+                    type: object
+                    description: "Options passed to the virtio scsi controller."
+              from_storage:
+                type: object
+                additionalProperties: false
+                required:
+                  - size
+                  - pool
+                  - options
+                properties:
+                  size:
+                    type: string
+                    pattern: "^\\d+G$"
+                    description: "Size of the created disk, has to be in Gigabytes."
+                    examples:
+                      - 25G
+                  options:
+                    type: object
+                  pool:
+                    type: string
 
   tcp_proxies:
     type: array

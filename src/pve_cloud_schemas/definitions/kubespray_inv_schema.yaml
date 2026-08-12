@@ -93,17 +93,18 @@ properties:
         - k8s_roles
       # if one passthrough disk id was set then the qemu has to be bound to a host
       # the admin has to manually pick the right one containing the physical disks
-      if:
-        required:
-          - zfs_localpv_csi_disks
-        properties:
-          zfs_localpv_csi_disks:
-            contains:
-              required:
-                - via_passthrough
-      then:
-        required:
-          - target_host
+      allOf: # we already declar if then in base schema
+        - if:
+            required:
+              - zfs_localpv_csi_disks
+            properties:
+              zfs_localpv_csi_disks:
+                contains:
+                  required:
+                    - via_passthrough
+          then:
+            required:
+              - target_host
       # when defining zfs csi pool / disks they both have to be defined
       oneOf:
         - required:
