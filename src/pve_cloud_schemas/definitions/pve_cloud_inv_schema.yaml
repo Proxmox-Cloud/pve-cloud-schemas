@@ -211,6 +211,12 @@ properties:
           items:
             type: string
 
+  additional_root_ssh_pub_keys:
+    type: array
+    description: "Additional public keys that will be added to the hosts trusted ssh keys (alongside the initial key you configured manually)."
+    items:
+      type: string
+
   acme_contact:
     type: string
     description: "Email address to use for acme account creation."

@@ -49,6 +49,11 @@ properties:
   root_ssh_pub_key:
     type: string
     description: trusted root key for the cloud init image.
+  additional_root_ssh_pub_keys:
+    type: array
+    description: "Additional public keys that will be added to the hosts trusted ssh keys."
+    items:
+      type: string
   pve_ha_group:
     type: string
     description: PVE HA group this vm should be assigned to (optional).
