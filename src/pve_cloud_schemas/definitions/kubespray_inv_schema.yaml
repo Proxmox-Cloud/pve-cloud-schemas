@@ -234,6 +234,9 @@ properties:
         mount_options:
           type: array
           description: "String array of mount options that will be set in the storage class and applied to pvs."
+        use_nbd_mounter:
+          type: boolean
+          description: "If set to true will use rbd-nbd to mount pvcs. Can dramatically improve performance on consumer ssds as osds."
 
   acme_staging:
     type: boolean
