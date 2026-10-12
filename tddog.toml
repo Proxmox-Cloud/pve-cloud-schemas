@@ -10,6 +10,9 @@ build_commands = [
     "twine", "upload", "--repository-url", "http://$REGISTRY_IP:8088/",
     "--username", "doesnt", "--password", "matter",
     "dist/pve_cloud_schemas-$VERSION.tar.gz", "dist/pve_cloud_schemas-$VERSION-py3-none-any.whl"
+  ],
+  [
+    "tddog", "clean-pypi", "pve-cloud-schemas", "$REGISTRY_IP:8088"
   ]
 ]
 dyn_version_py_path = "src/pve_cloud_schemas/_version.py"
