@@ -1,0 +1,55 @@
+title: "Setup generic acme certs sync job."
+description: "Qemu schema extension for creation of a generic cert sync job."
+extend_schema: qemu_inv_schema.yaml
+properties:
+  qemu_global_vars:
+    required:
+      - stack_cert_entries
+      - stack_cert_sync_paths
+    properties:
+      stack_cert_sync_paths:
+        type: array
+        description: "Paths where we want the stack acme cert to be synced to, including ownership and permission settings."
+        items:
+          type: object
+          description: "Full filesystem paths, including ownership and permissions."
+          properties:
+            path:
+              type: string
+              description: "Full path to the public PEM certificate to sync, including filename."
+            owner:
+              type: string
+            group:
+              type: string
+            mode:
+              type: string
+              description: "Octal mode file permission."
+      # this needs to 1:1 match the schema in kubespray_inv for cluster_cert_entries
+      stack_cert_entries:
+        type: array
+        description: "Content for the acme certificate we want to generate and link to the stack. This is the certificate that will be synced to stack_cert_sync_paths."
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - zone
+            - names
+          properties:
+            zone:
+              type: string
+              description: "DNS parent zone, should be the apex zone in ionos/route53 for dns01 challenge."
+            names:
+              type: array
+              items:
+                type: string
+                description: "SANs included in the certificate and basis for dns01 challenge."
+                examples:
+                  - '*'
+                  - example-service
+                  - '*.subzone'
+            authoritative_zone:
+              type: boolean
+              description: "This will cause the specified apex zone to be created as an authoritative zone in the proxmox clouds dns server. Ingress dns will only work for authoritative zones."
+            apex_zone_san:
+              type: boolean
+              description: "Creates additional SAN for the zone, if you have *.example.com you will also get example.com in your certificate. Defaults to false."
